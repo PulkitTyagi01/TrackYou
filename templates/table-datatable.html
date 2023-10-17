@@ -1,0 +1,110 @@
+{% extends 'layouts/master.html' %}
+{% with 'DataTable' as title %}
+{% endwith 'table-datatable.html' as filename %}
+
+{% block content %}
+<div class="page-heading">
+    <div class="page-title">
+        <div class="row">
+            <div class="col-12 col-md-6 order-md-1 order-last">
+                <h1>Task's</h1>
+                <!-- <p class="text-subtitle text-muted">Multiple form layout you can use</p> -->
+            </div>
+            <div class="col-12 col-md-6 order-md-2 order-first">
+                <nav aria-label="breadcrumb" class="breadcrumb-header float-start float-lg-end">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="home">Dashboard</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">Task's</li>
+                    </ol>
+                </nav>
+            </div>
+        </div>
+    </div>
+
+    <!-- Basic Horizontal form layout section start -->
+    <section id="basic-horizontal-layouts">
+        <div class="row match-height">
+            
+            <div class="col-md-8 col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h4 class="card-title">Daily Updates</h4>
+                    </div>
+                    <div class="card-content">
+                        <div class="card-body">
+                            <form method="post" action="" enctype="multipart/form-data" >{% csrf_token %}
+                                <div class="form-body">
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <label>Client Name</label>
+                                        </div>
+                                        <div class="col-md-8">
+                                            <div class="form-group has-icon-left">
+                                                <div class="position-relative">
+                                                    <input type="text" class="form-control" placeholder="Client Name" name="Client_name" id="first-name-icon">
+                                                    <div class="form-control-icon">
+                                                        <i class="bi bi-person"></i>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <label>Project name</label>
+                                        </div>
+                                        <div class="col-md-8">
+                                            <div class="form-group has-icon-left">
+                                                <div class="position-relative">
+                                                    <textarea rows = "5" cols = "50" class="form-control" name="Project_name" placeholder="Project name"></textarea>
+
+                                                    <div class="form-control-icon">
+                                                        <i class="bi bi-list-task"></i>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <!-- <div class="col-md-4">
+                                            <label>Inprogress task</label>
+                                        </div> -->
+                                        <!-- <div class="col-md-8">
+                                            <div class="form-group has-icon-left">
+                                                <div class="position-relative">
+                                                    
+                                                    <div class="form-control-icon">
+                                                        <i class="bi bi-chat-right-text"></i>
+                                                    </div>
+                                                    <textarea rows = "5" cols = "50" class="form-control" placeholder="Inprogress task" name="Inprogress_report" id="first-name-icon"></textarea>
+                                                </div>
+                                            </div>
+                                        </div> -->
+                                        
+                                        <div class="col-md-4">
+                                            <label>Description</label>
+                                        </div>
+                                        <div class="col-md-8">
+                                            <div class="form-group has-icon-left">
+                                                <div class="position-relative">
+                                                    <input type="text" class="form-control" placeholder="Description" name="Description">
+                                                    <div class="form-control-icon">
+                                                        <i class="bi bi-clock"></i>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="col-12 d-flex justify-content-end">
+                                            <button type="submit" class="btn btn-primary me-1 mb-1">Submit</button>
+                                            <button type="reset"
+                                                class="btn btn-light-secondary me-1 mb-1">Reset</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+   
+</div>
+{% endblock %}

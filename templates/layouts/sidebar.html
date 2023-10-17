@@ -1,0 +1,313 @@
+{% load static %}
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+  <style>
+  #user_search_filter {
+  position: absolute;
+  top: 100%;
+  /* left: 1.5rem; */
+  background: #fff;
+  padding: 10px;
+  font-family: Arial, Helvetica, sans-serif;
+  /* / width: calc(100% - 3rem); */
+  box-shadow: 0 0 3px #000;
+  max-height: 250px;
+  overflow-y: auto;
+  display:none;
+  min-width: 200px;
+  max-width: 280px;
+  left:80%;
+  transform: translate(-50%);
+  width: 25px;
+  z-index: 99;
+}
+#user_search_filter:hover{
+  cursor: pointer;
+} 
+  .traq-accordion button {
+      font-size: 20px;
+      text-align: left;
+  }
+  .traq-accordion ul {
+      padding: 0;
+      margin: 0;
+      list-style: none;
+  }
+  .traq-accordion ul a {
+      font-size: 20px;
+      text-align: left;
+  }
+  .btn{
+    margin-top: 1px;
+    /* / border-radius: 50px; / */
+    text-align: center;
+  }
+  </style>
+</head>
+
+<div class="sidebar-wrapper active">
+  <div class="sidebar-header">
+      <div class="d-flex justify-content-between">
+          <div class="logo">
+              <a href="home"><img src="{% static '/assets/images/logo/a.png' %}" alt="Logo" srcset="" style="height: 60%;"></a>
+          </div>
+          <div class="toggler">
+              <a href="#" class="sidebar-hide d-xl-none d-block"><i class="bi bi-x bi-middle"></i></a>
+          </div>
+      </div>
+  </div>
+  <div class="sidebar-menu">
+      <!-- <h2>{{request.user.username}}</h2> -->
+      <ul class="menu">{% for sidebarItem in sidebarItems %}
+          <div class="dropdown">
+              <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown" >{{sidebarItem.teams}}
+              <span class="caret"></span></button>
+              <ul class="dropdown-menu">
+                <li><a href="#">{{sidebarItem.name}}</a></li> 
+              </ul>
+          </div> 
+          {% endfor %}
+          {% if role == 3 or role1 == 3 or request.path == '/projects_lists' %}
+          <div class="div_allteams" id="team">
+              <h2 class="header m-0" id="panelsStayOpen-heading">
+                  <a href="/home">
+                  <button class="btnn btn-primary p-4 px-4 w-100" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapse" aria-expanded="true" aria-controls="panelsStayOpen-collapseOne">
+                    All Team
+                  </button>
+              </a>
+                </h2>
+          </div>
+          
+          
+          {% for team in TeamList %}
+          <div class="accordion traq-accordion" id={{team.name}} >
+              <div class="accordion-item">
+                <h2 class="accordion-header m-0" id="panelsStayOpen-heading{{forloop.counter}}">
+                    <a href="/{{team.name}}">
+                      <button class="accordion-button btn btn-primary p-4 px-4 w-100" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapse{{forloop.counter}}" aria-expanded="true" aria-controls="panelsStayOpen-collapseOne">
+                          {{team.name}}
+                      </button>
+                    </a> 
+                </h2>
+                <!-- <div id="panelsStayOpen-collapse{{forloop.counter}}" class="accordion-collapse collapse" aria-labelledby="panelsStayOpen-heading{{forloop.counter}}">
+                  <div class="accordion-body"> -->
+                      
+                      <!-- <ul >
+                          {% for key, value in TeamMembers.items %}
+                              {% if key == team.name %}
+                                  {% for j in value %}
+                          <li><a class="btn btn-default p-2 px-4 w-100" href="#">{{j}}<input type="checkbox" class="form-check-input float-end" id="check{{forloop.counter0}}" name="option1" value="something" unchecked></a></li>
+                                  {% endfor %}
+                              {% endif %}
+                          {% endfor %}
+                      </ul> -->
+                  <!-- </div>
+                </div> -->
+                
+              </div>
+              {% endfor %}
+              {% endif %}
+              
+
+
+
+
+
+
+
+              
+              
+          </div>
+          
+          
+      </ul>
+  </div>
+  <br>
+  <br>
+          <footer>
+              <!-- <div class="footer clearfix mb-0 text-muted">
+                  <div class="position-absolute bottom-0 start-0 position-fixed" style="margin-left: 2%; margin-block:1%; width:12%">
+                      <button class="btn btn-primary" type="button" style="width: 48%;">
+                          Compare
+                      </button>
+                      <button class="btn btn-primary" type="button" style="width: 48%; margin-left: 1%;">
+                          See Details
+                      </button>
+                  </div>
+              </div> -->
+              {% if role == 3 or role1 == 3 or request.path == '/projects_lists' %}
+              <div class="footer clearfix mb-0 text-muted">
+                  <div class="position-absolute bottom-0 start-0 position-fixed" style="margin-left: 2%; margin-block:1%; width:18%">
+                      <button class="btn btn-primary" type="button" style="width: 30%" data-toggle="modal" data-target="#myModal5">
+                          Change <br>
+                          Manager
+                      </button>
+                      <button class="btn btn-primary" type="button" style="width: 30%; margin-left: 1%;"  data-toggle="modal" data-target="#myModal6">
+                          Delete <br>
+                          Team
+                      </button>
+                  </div>
+              </div>
+              {% endif %}
+          </footer>
+</div>
+
+<div class="modal fade" id="myModal5" role="dialog">
+  <div class="modal-dialog">
+  
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="row">
+        <div class="col-lg-10">
+          <div class="modal-header">
+            <h2 class="modal-title">Change Manager</h2>
+          </div>
+        </div>
+        <div class="modal-body">
+          
+          <form action="{% url 'adminn:ChangeManager'%}" method="post">
+            {% csrf_token %}
+            <div class="col-lg-10">
+              <div class="col-lg-6">
+                <label for="fname">Team Name:</label>&nbsp;&nbsp;
+              </div>
+              <div class="col-lg-4">
+                <select name = "teamName" onfocus='this.size=6;' onblur='this.size=1;' onchange='this.size=1; this.blur();'>
+                  <option>select</option>
+                  {% for i in TeamList %}
+                  <option value = {{i}}>{{i}}</option>
+                  {%endfor%}
+                  </select><br><br>
+              </div>
+            </div>
+            <div class="col-lg-10">
+              
+              <div class="dropdown">
+                <div id="myDropdown1" class="dropdown-content">
+                    <div class="col-lg-6">
+                      <label for="fname">Manager Name:</label>&nbsp;&nbsp;
+                    </div>
+                    <div class="col-lg-6">
+                      <input type="text" required placeholder="Change Manager" id="myInput1" name="managerName" onkeyup="search1()"/>
+                      
+                      <div id="user_search_filter">
+                      </div>
+                    </div>
+                </div>
+              </div>
+            </div>
+
+            <br>
+            <div class="col-lg-10">
+
+              <div class="modal-footer">
+                <button type="submit" class="btn btn-primary">Change</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+              </div>
+            </div>
+            </form>
+        </div>
+      
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <div class="modal fade" id="myModal6" role="dialog">
+    <div class="modal-dialog">
+      <div class="row">
+
+        <!-- Modal content-->
+        <div class="modal-content">
+          <div class="col-lg-10">
+
+            <div class="modal-header">
+              <h4 class="modal-title">Delete Team</h4>
+            </div>
+          </div>
+          <div class="modal-body">
+            <form action="{% url 'adminn:DeleteTeam'%}" method="post">
+              {% csrf_token %}
+              <div class="col-lg-10">
+                <div class="col-lg-5">
+                  <label for="tname">Team Name:</label>&nbsp;&nbsp;
+                </div>
+                <div class="col-lg-5">
+                  <select name = "team_name" onfocus='this.size=6;' onblur='this.size=1;' onchange='this.size=1; this.blur();'>
+                    <option>select</option>
+                  {% for i in TeamList %}
+                  <option value = {{i}}>{{i}}</option>
+                  {%endfor%}
+                  </select><br><br>
+              </div>
+              </div>
+              <div class="col-lg-10">
+
+                <div class="modal-footer">
+                  <button type="submit" class="btn btn-danger">Delete</button>
+                  <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+        
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+<script>
+
+function abcd(name){
+ $("#myInput1").val(name)
+ $("#user_search_filter").css("display","none");
+     }
+
+ function search1() {
+ var output = ""
+ $("#user_search_filter").html(output);
+ $("#user_search_filter").css("display","none");
+ let input = $("#myInput1").val();
+ if (input.length > 1) {
+   console.log("filterData", input);
+   $.ajax({
+     type: "GET",
+     url: "newapi",
+     data: {
+       "query": input,
+     },
+     dataType: "json",
+     success: function (data) {
+     console.log(data)
+     var kch_bhi = JSON.parse(data.a)
+     $("#user_search_filter").css("display","block");
+    if(kch_bhi.length > 0){
+     for (var i = 0; i < Object.keys(kch_bhi).length; i++) {
+       var a = 'li'+i;
+       var test = String(kch_bhi[i]);
+       test = test.toString();
+       
+       output += '<li onclick="abcd(`'+test+'`)" id=li'+i+'> <span class="filter_search_label">' + kch_bhi[i] +'</span></li>';
+
+       $("#user_search_filter").html(output);
+}
+}else{
+output+="No User Found"
+$("#user_search_filter").html(output);
+}
+     },
+   error: function (error_data) {
+     console.log(error_data);    
+   },
+
+ });
+}
+}
+
+</script>

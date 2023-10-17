@@ -1,0 +1,1231 @@
+{% extends 'layouts/master.html' %}
+{% with 'Dashboard' as title %}
+{% endwith 'home.html' as filename %}
+
+{%load static %}
+{% block styles %}
+<link rel="stylesheet" href="{% static 'assets/vendors/iconly/bold.css' %}">
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.3/Chart.bundle.min.js"></script>
+
+
+<style>
+    #custom_search_filter {
+        position: absolute;
+        top: 100%;
+        /* left: 1.5rem;  */
+        background: #fff;
+        padding: 10px;
+        font-family: Arial, Helvetica, sans-serif;
+        /* width: calc(100% - 3rem); */
+        box-shadow: 0 0 3px #000;
+        max-height: 250px;
+        overflow-y: auto;
+        display: none;
+        min-width: 220px;
+        max-width: 280px;
+        left: 45%;
+        text-align: center;
+        transform: translate(-50%);
+        width: 25px;
+        z-index: 99;
+    }
+    #custom_search_filter:hover{
+    cursor: pointer;
+  }
+</style>
+<style>
+    .myDiv {
+      border: -1px outset red;
+      background-color: aliceblue;    
+      text-align: center;
+      width: 65%;
+    }
+    .div_info{
+      border: 5px rgb(156, 127, 127);
+      background-color: lightblue; 
+    }
+    .username {
+    visibility: hidden;
+    }
+    </style>
+
+<style>
+    .myDiv {
+      border: -1px outset red;
+      background-color: aliceblue;    
+      text-align: center;
+      width: 65%;
+    }
+    .div_info{
+      border: 5px rgb(156, 127, 127);
+      background-color: lightblue; 
+    }
+    h6.b {
+    visibility: hidden;
+    }
+    </style>
+
+
+<style>
+    #search_div {
+        top: 100%;
+        background: #fff;
+        padding: 10px;
+        font-family: Arial, Helvetica, sans-serif;
+        box-shadow: 0 0 3px #000;
+        max-height: 250px;
+        overflow-y: auto;
+        display: none;
+        min-width: 200px;
+        max-width: 200px;
+        left: 45%;
+        text-align: center;
+        width: 25px;
+        margin-bottom: 15px;
+        margin-top: 2px;
+    }
+
+    .graph_div {
+        display: none;
+    }
+
+    .graph_div.active {
+        display: block;
+    }
+    .detail-table table {
+        width: 100%;
+    }
+    .detail-table th, .detail-table td {
+        width: 0%;
+    }
+    .detail-table table {
+         border: 2px solid #ddd !important;
+    }
+    /* .a{
+        width: 100%;
+        text-align: center;
+    } */
+
+    /* .user-dropdown {
+        position: absolute;
+        left: 50%;
+    }
+
+
+    @media(max-width:767px) and (min-width:576px){
+    .user-dropdown {
+        left: 30%;
+    }
+    } */
+</style>
+
+{% endblock %}
+
+{% block content %}
+
+<div class="page-heading">
+    <div class="container" style="margin-right: 100%;">
+        {% include 'message.html' %}
+        <div class="row">
+            <div class="col-md-6 col-sm-6">
+                <h4>Hi, {{request.user}} have a nice day</h4>
+                <p id="p1"></p>
+            </div>
+            
+                <div class="col-md-6 col-sm-6">
+                                <div class="dropdown top-5 user-dropdown">
+                                    <button class="btn btn-secondary" type="button" id="dropdownMenuButton1"
+                                        data-bs-toggle="dropdown" aria-expanded="false" style="width: 160px;">
+                                        <h5 class="font-bold">{{request.user}}</h5>
+                                    </button>
+                                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                                    
+                                        <li>
+                                            {% if role == 3 or role1 == 3 %}
+                                            <a class="btn btn-default p-2 px-4 w-100" href="{% url 'manager:uploaddata' %}">Add Users</a>
+
+                                            <a class="btn btn-default p-2 px-4 w-100" data-toggle="modal"
+                                            data-target="#exampleModalLong">Add Team</a>
+                                            <!-- <a class="btn btn-default p-2 px-4 w-100" data-toggle="modal"
+                                            data-target="#exampleModalLong">Register Employee</a>
+     -->
+                                            <a class="btn btn-default p-2 px-4 w-100" href="{% url 'adminn:projects_lists' %}">Project List</a>
+    
+                                            {% elif request.path == '/projects_lists' or request.path == '/Projects'%}
+    
+                                            <a class="btn btn-default p-2 px-4 w-100" href="{% url 'adminn:home' %}">Dashboard</a>
+                                            
+                                            
+    
+                                            {% elif role3 == 1 %}
+                                            <a class="btn btn-default p-2 px-4 w-100" data-toggle="modal"
+                                            data-target="#exampleModalLong">Daily Update</a>
+    
+                                            {% elif role3 == 2 %}
+                                            <a class="btn btn-default p-2 px-4 w-100" href="{% url 'adminn:home' %}">Dashboard</a>
+                                            <a class="btn btn-default p-2 px-4 w-100" data-toggle="modal"
+                                            data-target="#exampleModalLong">Daily Update</a>
+    
+                                            {% else %}
+                                            <a class="btn btn-default p-2 px-4 w-100" href="{% url 'manager:uploaddata' %}">Add Users</a>
+                                            <a class="btn btn-default p-2 px-4 w-100"
+                                            href='/emp/{{request.user}}'>Profile</a>
+                                            <a class="btn btn-default p-2 px-4 w-100" data-toggle="modal"
+                                            data-target="#exampleModalLong">Manage Team Members</a>
+                                            <a class="btn btn-default p-2 px-4 w-100"
+                                            href="{% url 'manager:team_projectdata' %}">Projects</a>
+                                            {% endif %}
+                                        </li>
+                                        <li><a class="btn btn-primary p-2 px-4 w-100"
+                                                href="{% url 'adminn:logout' %}">Logout</a></li>
+                                        <!-- <li><a class="btn btn-default p-2 px-4 w-100" href="#">{{request.user.email}}</a> -->
+                                            
+                                        </li>
+                                    </ul>
+                                </div>
+                               <!-- <div id="search_div" class="projectgraph"data-toggle="modal" data-target="#myModal"></div> -->
+                                {% if role2 == 2 %}
+                                <div class="dropdown position-absolute top-4">
+                                    <button class="btn btn-secondary" type="button" id="dropdownMenuButton1"
+                                        data-bs-toggle="dropdown" aria-expanded="false" style="width: 160px;">
+                                        <h5 class="font-bold">Manage Projects</h5>
+                                    </button>
+                                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                                        <li>
+                                            <a class="btn btn-default p-2 px-4 w-100" data-toggle="modal"
+                                            data-target="#ModalLongProject1">Add Project</a>
+        
+                                            <a class="btn btn-default p-2 px-4 w-100" data-toggle="modal"
+                                            data-target="#ModalLongProject2">Delete Project</a>
+        
+                                            <a class="btn btn-default p-2 px-4 w-100" data-toggle="modal"
+                                            data-target="#ModalLongProject3">Modify Project Status</a>
+                                            
+        
+                                        </li>
+                                        
+                                    </ul>
+                                </div> 
+                                {%endif%}
+
+                </div>
+        </div>
+
+        <!-- The Modal -->
+        <div class="modal fade" id="myModal">
+            <div class="modal-dialog modal-xl" style="width: 50%;">
+                <div class="modal-content">
+                    <div class="modal-header">
+
+                        <div class="button_dropdown">
+                                <button class="btn btn-secondary" type="button" id="i" data-bs-toggle="dropdown" style="width: 100px; margin-left: 480px;">
+                                    <h6 class="font-bold">Graph</h6>
+                                </button>
+                                <ul class="dropdown-menu graph_dropdown_btn" aria-labelledby="dropdownMenuLink" style="min-width: 103px;">
+                                    <li><button class="btn btn-default p-2 px-4 w-100" value="Days" data-tab="days">Days</button></li>
+                                    
+                                    <li><button class="btn btn-default p-2 px-4 w-100" value="Week" data-tab="weeks">Week</button></li>
+                                        <!-- </form> -->
+                                    <li><button class="btn btn-default p-2 px-4 w-100" value="Month" data-tab="month">Month</button></li>
+                                </ul>
+                        </div>
+                    </div>
+
+                    <!-- Modal body -->
+                    <div class="modal-body">
+                        <div class="graph_div active" id="days">
+                            <canvas id="myChartBarDays"></canvas>
+                        </div>
+                        <div class="graph_div" id="weeks">
+                            <canvas id="myChartBarWeeks"></canvas>
+                        </div>
+                        <div class="graph_div" id="month">
+                            <canvas id="myChartBarMonths"></canvas>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <!-- <button data-bs-toggle="modal" href="#myModal2" class="btn btn-secondary">Click</button> -->
+                        <button type="button" class="close" data-dismiss="modal">Close</button>
+
+                    </div>
+                </div>
+
+
+            </div>
+
+        </div>
+
+        <div class="modal fade" id="exampleModalLong" tabindex="-1" role="dialog"
+            aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        {% if role == 3 or role1 == 3 or request.path == '/projects_lists' %}
+                        <h5 class="modal-title" id="exampleModalLongTitle">
+                            Add Team and Manager
+                        </h5>
+                        {% elif role3 == 1 or role3 == 2 %}
+                        <h5 class="modal-title" id="exampleModalLongTitle">
+                            Add Daily Update
+                        </h5>
+                        {% else %}
+                        <h5 class="modal-title" id="exampleModalLongTitle">
+                            Manage Team Members
+                        </h5>
+                        {% endif %}
+                        
+                    </div>
+                    <div class="modal-body">
+                        {% if role == 3 or role1 == 3 or request.path == '/projects_lists' %}
+                        <form action="{% url 'adminn:AddTeam' %}" method="post">
+                            {% csrf_token %}
+                            <div>
+                                <div class="col-lg-5">
+                                    <label for="fname">Team Name:</label>&nbsp;&nbsp;
+                                </div>
+                                <div class="col-lg-5">
+                                    <input type="text" required id="tname" name="TeamName" placeholder="Add team"><br><br>
+                                </div>
+                            </div>
+                            <div class="dropdown">
+                                <!-- <input type="text" onclick="myFunction()" class="dropbtn" name="ManagerName" placeholder="Add Manager"> -->
+                                <div id="myDropdown" class="dropdown-content">
+                                    <div class="col-lg-5">
+                                        <label for="fname">Manager Name:</label>&nbsp;&nbsp;
+                                    </div><div class="col-lg-7">
+                                        <input type="text" required placeholder="Add Manager" id="myInput" name="ManagerName"
+                                        onkeyup="search()" />
+                                        <div id="custom_search_filter">
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>  
+                            <div class="col-lg-12">
+                                <div class="modal-footer">
+                                    <button type="submit" class="btn btn-primary">Add</button>
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                </div>
+                            </div>
+                        </form>
+                        <!-- <form action="{% url 'manager:uploaddata' %}" method="post">
+                            {% csrf_token %}
+                            <div>
+                                <div class="col-lg-5">
+                                    <label for="fname">Upload CSV:</label>&nbsp;&nbsp;
+                                </div>
+                                <div class="col-lg-5">
+                                    <input type="file" id="employeefile" name="employeefile" placeholder="Add Csv"><br><br>
+                                </div>
+                            </div>
+                            <div class="col-lg-12">
+                                <div class="modal-footer">
+                                    <button type="submit" class="btn btn-primary">Upload</button>
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                </div>
+                            </div>
+                        </form> -->
+                        {% elif role3 == 1 or role3 == 2%}
+                        
+                        <form action="{% url 'employee:dailyupdate' %}" method="post">
+                            {% csrf_token %}
+                            <div class="row">
+                                <div class="col-lg-10">
+                                    <div class="col-lg-5">
+                                        <label for="project">Project:</label>&nbsp;&nbsp;
+                                    </div>
+                                    <div class="col-lg-5 ">
+                                        <select  name = "project1" onfocus='this.size=6;' onblur='this.size=1;' onchange='this.size=1; this.blur();'>
+                                        <option >Select Project </option>
+                                        {% for i in ProjectList %}
+                                        <option value = {{i}}>{{i}}</option>
+                                        {%endfor%}
+                                        </select><br><br>
+                                    </div>
+                                </div>
+                                
+                                <div class="col-lg-10">
+                                    <div class="col-lg-5">
+                                        <label for="hours">Hours:</label>&nbsp;&nbsp;
+                                    </div>
+                                    <div class="col-lg-5">
+                                        
+                                        <input type="text" id="hours" name="Hours" placeholder="Enter in Hours.min format" required><br><br>
+                                    </div>
+                                </div>
+                                
+                                <div class="col-lg-10">
+                                    <div class="col-lg-5">
+                                        <label for="daily update">Daily Update:</label>&nbsp;&nbsp;
+
+                                       
+                                    </div>
+                                    <div class="col-lg-5">
+                                        <input type="" required id="daily update" name="Daily Update" placeholder=""><br><br>
+                                    </div>
+                                </div>
+                                <div class="col-lg-10">
+                                    <div class="col-lg-5">
+                                        <label for="date">Date:</label>&nbsp;&nbsp;
+                                    </div>
+                                    <div class="col-lg-5">
+                                        <input type="datetime-local" id="date" name="date" placeholder="" min={{min_date}} max={{max_date}} value={{default_date}} required><br><br>
+                                    </div>
+                                </div>
+                                
+                                <div class="modal-footer">
+                                    <button type="submit" class="btn btn-primary">Submit</button>
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                </div>
+                            </div>
+                            </form>
+                        {% else %}
+                        <form action="{% url 'manager:AddTeamMember' %}" method="post">
+                            {% csrf_token %}
+                            <div class="modal-body-content manager_team">
+                                <div class="dropdown">
+                                    <!-- <input type="text" onclick="myFunction()" class="dropbtn" name="ManagerName" placeholder="Add Manager"> -->
+                                    <div id="myDropdown" class="dropdown-content">
+                                        <div class="employee_text">
+                                            <label for="fname">Employee Name:</label>&nbsp;&nbsp;
+                                        </div>
+                                        <div class="employee_input">
+                                            <input type="text" placeholder="Team Member" id="myInput" name="EmployeeName"
+                                            onkeyup="search()" />
+                                            <div id="custom_search_filter">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                                <div class="manager_modal_footer">
+                                        <button type="submit" formaction="{% url 'manager:AddTeamMember' %}" class="btn btn-primary">Add</button>
+                                        <button type="submit" formaction="{% url 'manager:DeleteTeamMember' %}" class="btn btn-primary">Delete</button>
+                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                </div>
+                        </form>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="modal fade project1" id="ModalLongProject1" tabindex="-1" role="dialog"
+            aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h2 class="modal-title" id="exampleModalLongTitle">
+                            Add Project
+                        </h2>
+                    </div>
+                    <div class="modal-body">
+                        <form action="{% url 'manager:AddProject' %}" method="post">
+                            {% csrf_token %}
+                            <div class="row">
+                                <div class="col-lg-10">
+                                    <div class="col-lg-4">
+                                        <label for="fname">Project Name:</label>&nbsp;&nbsp;
+                                    </div>
+                                    <div class="col-lg-6">
+                                        <input type="text" id="tname" name="Projectname" placeholder="Project Name"><br><br>
+                                    </div>
+                                </div> 
+                                <div class="col-lg-10">
+                                    <div class="col-lg-4">
+                                        <label for="fname">Description</label>&nbsp;&nbsp;
+                                    </div>
+                                    <div class="col-lg-6">
+                                        <input type="text" id="tname1" name="Description" placeholder="Description"><br><br>
+                                    </div>
+                                </div>            
+                                <div class="modal-footer">
+                                    <button type="submit" class="btn btn-primary">Add</button>
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                </div>
+                            </div>
+                        </form>
+                    
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade project2" id="ModalLongProject2" tabindex="-1" role="dialog"
+            aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLongTitle">
+                            Delete Project
+                        </h5>
+                    </div>
+                    <div class="modal-body">
+                        <form action="{% url 'manager:DeleteProject' %}" method="post">
+                            {% csrf_token %}
+                            <div class="row">
+                                <div class="col-lg-10">
+                                    <div class="col-lg-4">
+                                        <label for="fname">Project Name:</label>&nbsp;&nbsp;
+                                    </div>
+                                    <div class="col-lg-4">
+                                        <select name = "Projectname">
+                                            {% for i in team_projects %}
+                                            <option value = {{i.name}}>{{i.name}}</option>
+                                            {%endfor%}
+                                        </select><br><br>                           
+                                    </div>    
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="submit" class="btn btn-primary">Delete</button>
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                </div>
+                            </div>
+                        </form>
+                    
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade project3" id="ModalLongProject3" tabindex="-1" role="dialog"
+            aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="row">
+                        <div class="modal-header col-lg-12">
+                            <h5 class="modal-title" id="exampleModalLongTitle">
+                                Modify Project Status
+                            </h5>
+                        </div>
+                        <div class="modal-body">
+                            <form action="{% url 'manager:ModifyProjectStatus' %}" method="post">
+                                {% csrf_token %}
+                                <div class="col-lg-10">
+                                    <div class="col-lg-5">
+                                        <label for="fname">Project Name:</label>&nbsp;&nbsp;
+                                    </div>
+                                    <div class="col-lg-5">
+                                        <select name = "Projectname" onfocus='this.size=6;' onblur='this.size=1;' onchange='this.size=1; this.blur();'>
+                                            {% for i in team_projects %}
+                                            <option value = {{i.name}}>{{i.name}}</option>
+                                            {%endfor%}
+                                        </select><br><br>
+                                    </div>
+                                </div>
+                                <div class="col-lg-10">
+                                    <div class="col-lg-5">
+                                        <label for="fname">Status:</label>&nbsp;&nbsp;
+                                    </div>
+                                    <div class="col-lg-5">
+                                        <select name="Status" id="projectstatus">
+                                            <option value="1">Active</option>
+                                            <option value="2">On_hold</option>
+                                            <option value="3">Completed</option>
+                                          </select>
+                                          <br><br>
+                                    </div>
+                                </div>
+                                <div class="col-lg-10">
+                                    <div class="modal-footer">
+                                        <button type="submit" class="btn btn-primary">Modify</button>
+                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="page-content container">
+        <section class="row">
+                    {% if role3 == 1 or role3 == 2 %}
+                    <div class="col-lg-12">
+                                <div class="col-lg-12"><h2>Details</h2></div>
+                                
+                                <div class="col-lg-8">
+                                    <div class="table-responsive detail-table">
+                                        {% for key,value in final_dicttt.items %}
+                                        <table class="table table-hover table-lg">
+                                            <tr>
+                                                <th>Name</th><td>{{key}}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                                   <a  href="{% url 'employee:edit_profile' %}"><button class="btn btn-primary ">Edit Details</button></a>
+                                                    </td>
+                                            </tr>
+                                            <tr>
+                                                <th>Team Name</th><td>{{value.1}}</td>
+                                            </tr>
+                                            <tr>
+                                                <th>Manager Name</th><td>{{value.2}}</td>
+                                            </tr>
+                                            <tr>
+                                                <th>Working on</th><td>{{value.0}}</td>
+                                            </tr>
+                                            <tr>
+                                                <th>Last Week Hours</th><td>{{value.3}}</td>
+                                            </tr>
+                                            
+                                            <tr>
+                                                <th class="EmployeeGraph"><button class="btn btn-primary" data-toggle="modal" data-target="#myModal">See Data</button>
+                                                
+                                                </th>  
+                                            </tr>
+                                            
+                                        </table>
+                                        <div class="username">{{request.user}}</div>   
+                                        {% endfor %}
+                                        
+                                    </div>
+                                    
+                                </div>
+                    <!-- </div> -->
+                    <div class="col-lg-8">
+                    {% elif role2 == 2 %}
+                        <div class="col-lg-4">
+                            <div class="position-relative search_by_team">
+                                
+                                <input type="text" id="search_addon" placeholder="Search by Project" onkeyup="projectsearch()" />
+                                <div id="search_div" class="projectgraph position-absolute"data-toggle="modal" data-target="#myModal"></div> 
+                            </div>
+                        </div>
+                        <!-- <div class="dropdown position-absolute top-4">
+                            <button class="btn btn-secondary" type="button" id="dropdownMenuButton1"
+                                data-bs-toggle="dropdown" aria-expanded="false" style="width: 160px;">
+                                <h5 class="font-bold">Manage Projects</h5>
+                            </button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                            <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                                <li>
+                                    <a class="btn btn-default p-2 px-4 w-100" data-toggle="modal"
+                                    data-target="#ModalLongProject1">Add Project</a>
+
+                                    <a class="btn btn-default p-2 px-4 w-100" data-toggle="modal"
+                                    data-target="#ModalLongProject2">Delete Project</a>
+
+                                    <a class="btn btn-default p-2 px-4 w-100" data-toggle="modal"
+                                    data-target="#ModalLongProject3">Modify Project Status</a>
+                                    
+
+                                </li>
+                                
+                            </ul>
+                        </div> -->
+                        {% elif role == 3 %}
+                        <div class="col-lg-8">
+                            <div class="position-relative search_by_team">
+                                <input type="text" id="search_addon" placeholder="Search by Team" onkeyup="teamsearch()" />
+                            <div id="search_div" class="teamgraph position-absolute" data-toggle="modal" data-target="#myModal"></div>
+                            </div>
+                        </div>
+
+                        {% elif role4 == 3 %}
+                        <div class="col-lg-8">
+                            <div class="position-relative search_by_team">
+
+                                <input type="text" id="search_addon" placeholder="Search by Team_List" onkeyup="teamsearch()" />
+                                <div id="search_div" class="teamgraph position-absolute"></div>
+                            </div>
+                            <!-- <input type="text" id="search_list" placeholder="Search by Team_List" onkeyup="teamsearch()" />
+                            <div id="search_team" class="a"></div> -->
+                        </div>
+                        {% elif request.path == '/edit_profile' %}
+                        {% else %}
+                        <div class="col-lg-8">
+                            <div class="position-relative search_by_team">
+
+                                <input type="text" id="search_addon" placeholder="Search by Name" onkeyup="searchhh()" />
+                                <div id="search_div" class="graph position-absolute" data-toggle="modal" data-target="#myModal"></div>
+                            </div>
+                        </div>
+                    {% endif %}
+                    </div>
+                </div>
+
+                    <div class="row">
+
+                        <div class="col-lg-12">
+                            <div class="col-lg-8">
+                                <div class="table-responsive detail-table">
+                                    <table class="table table-hover table-lg" id="empTable">
+                                        <thead>
+                                            <tr>
+                                                {% if request.path == '/home' and role == 3 %}
+                                                <th>Team</th>
+                                                <th>Manager</th>
+                                                <th>Last Week Hrs</th>
+
+                                                {% elif request.path == '/home' and role == 2 %}
+                                                <th>Team</th>
+                                                <th>Manager</th>
+                                                <th>Last Week Hrs</th>
+                                                
+                                                {% elif role4 == 3 and request.path == '/projects_lists' %}
+                                                <th class="a">Team</th>
+                                                <th class="a">Projects</th>
+                                                <th class="a">Start Date</th>
+                                                <th class="a">End Date</th>
+                                                <th class="a">Last Week Hrs</th>
+                                                <th class="a">Status</th>                                        
+
+                                                {% elif role2 == 2 and request.path == '/Projects' %}
+                                                <th>Project Name</th>
+                                                <th>Status</th>
+                                                <th>Last Week Hrs</th>
+
+                                                {% elif role1 == 3 %}
+                                                <th>Name</th>
+                                                <th>Role</th>
+                                                <th>Projects</th>
+                                                <th>Last Week Hrs</th>
+
+                                                {% elif role3 == 1 or role3 == 2 or request.path == '/edit_profile' %}
+                                                
+                                    
+                                                {% else %}
+                                                <th>Name</th>
+                                                <th>Projects</th>
+                                                <th>Last Week Hrs</th>
+                                                {% endif %}
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                
+                                            
+                                            
+                                            {% if role == 3 %}
+                                            
+                                            {% for key,value in FinalDataDict.items %}
+                                            <tr class="TeamGraph" id="see_data" data-toggle="modal" data-target="#myModal">
+                                                <td class="col-3">
+                                                    <div id="mem_det">
+                                                    </div>
+                                                    <div class="d-flex align-items-center">
+                                                        <p class="font-bold ms-3 mb-0" ></p>{{key}}</p>
+                                                    </div>
+                                                </td>
+                                                <td class="col-auto">
+                                                    <p class=" mb-0" id="items">{{value.0}}</p>
+                                                </td>
+                                                <td>
+                                                    <p class=" mb-0" id="items">{{value.1}}</p>
+                                                </td>
+                                            </tr>
+                                            {% endfor %}
+
+                                            {% elif role4 == 3 and request.path == '/projects_lists' %}
+                                            {%for key, value in final_dictt2.items%}
+                                            <tr class="ProjectListGraph" id="see_data" data-toggle="modal" data-target="#myModal">
+                                                <td  >{{value.0}}</td>
+                                                <td class="col-abc" >{{key}}</td>
+                                                <td class="text-center">{{value.1}}</td>
+                                                <td class="text-center" >{{value.2}}</td>
+                                                
+                                                <td class="text-center">{{value.4}}</td>
+                                                
+                                                <td  >{{value.3}}</td>
+                                                    <!-- <td class="col-2 text-center">{{value.value}}</td> -->
+                                                    
+                                            </tr>
+                            
+                                        {%endfor%}
+                            
+                                            
+                                            {% elif role2 == 2 and request.path == '/Projects' %}
+                                            {% for key,value in final_dictt.items %}
+
+                                            <tr class="ProjectGraph" id="see_data" data-toggle="modal" data-target="#myModal" >
+                                                <td class="col-3">
+                                                    <div id="mem_det">
+                                                    </div>
+                                                    <div class="d-flex align-items-center">
+                                                        <p class="font-bold ms-3 mb-0">{{key}}</p>
+                                                    </div>
+                                                </td>
+                                                <td class="col-auto">
+                                                    <p class=" mb-0" id="items">{{value.0}}</p>
+                                                </td>
+                                                <td class="col-auto">
+                                                    <p class=" mb-0" id="items">{{value.1}}</p>
+                                                </td>
+                                            </tr>
+                                            {% endfor %}
+
+                                            {% elif role1 == 3 %}
+                                            {% for key,value in final_dict.items %}
+                                            <tr class="TeamEmployeeGraph" id="see_data" data-toggle="modal" data-target="#myModal"
+                                                >
+                                                <td class="col-3" id="items">
+                                                    <div id="mem_det">
+                                                    </div>
+                                                    <div class="d-flex align-items-center" >
+                                                        <p class="font-bold ms-3 mb-0" id="{{key}}" value="{{Key }}">{{key}}</p>
+                                                    </div>
+                                                </td>
+                                                <td class="col-auto">
+                                                    <p class=" mb-0">{{value.2}}</p>
+                                                </td>
+                                                <td class="col-auto">
+                                                    {% if value.0|length != 0 %}
+                                                    <p class=" mb-0">{{value.0}}</p>
+                                                    {% else %}
+                                                    <p class=" mb-0">Currently on POC</p>
+                                                    {% endif %}
+                                                </td>
+                                                <td>
+                                                    {% if value.1|length != 0 %}
+                                                    <p class=" mb-0">{{value.1.0}}</p>
+                                                    {% else %}
+                                                    <p class=" mb-0">0</p>
+                                                    {% endif %}
+                                                </td>
+                                            </tr>
+                                            {% endfor %}
+
+                                            {% elif request.path == '/edit_profile' %}
+                                            <div class="card" >
+                                                <div class="card-body">
+                                            <form method="POST" action="">
+                                                {% csrf_token %}
+                                                <div class="mb-3">
+                                                <div>
+                                                    <label>First Name: </label>
+                                                <input type="text" class="form-control" style="width:48% ;" name="firstname" aria-describedby="emailHelp" placeholder="{{name1.first_name}}" value="{{name1.first_name}}">
+                                                </div>
+                                                <br>
+                                                <div>
+                                                    <label>Last Name: </label>
+                                                <input type="text" class="form-control" name="lastname" style="width:48% ;" aria-describedby="emailHelp" value="{{name1.last_name}}">
+                                                </div>
+                                                <br>
+                                                <div>
+                                                    <label>Email: </label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                                <input type="email" class="form-control" name="email" style="width:48% ;" aria-describedby="emailHelp" value="{{name1.email}}">
+                                                </div>
+                                                </div>
+                                                <br>
+                                                <div>   
+                                                <button type="submit" class="btn btn-primary">Update</button>
+                                                </div>
+                                            </form>
+                                            </div>
+                                            </div>
+                                            {% else %}
+                                            {% for key,value in final_dict.items %}
+                                            <tr class="TeamEmployeeGraph" id="see_data" data-toggle="modal" data-target="#myModal"
+                                                >
+                                                <td class="col-3" id="items">
+                                                    <div id="mem_det">
+                                                    </div>
+                                                    <div class="d-flex align-items-center" >
+                                                        <p class="font-bold ms-3 mb-0" id="{{key}}" value="{{Key }}">{{key}}</p>
+                                                    </div>
+                                                </td>                      
+                                                <td class="col-auto">
+                                                    {% if value.0|length != 0 %}
+                                                    <p class=" mb-0">{{value.0}}</p>
+                                                    {% else %}
+                                                    <p class=" mb-0">Currently on POC</p>
+                                                    {% endif %}
+                                                </td>
+                                                <td>
+                                                    {% if value.1|length != 0 %}
+                                                    <p class=" mb-0">{{value.1.0}}</p>
+                                                    {% else %}
+                                                    <p class=" mb-0">0</p>
+                                                    {% endif %}
+                                                </td>
+                                            </tr>
+                                            {% endfor %}
+                                            {% endif %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>    
+                </div>
+            </div>
+            <div class="modal" id="myModal2" data-bs-backdrop="static">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h4 class="modal-title">2nd Modal title</h4>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
+                        </div>
+                        <div class="container"></div>
+                        <div class="modal-body">
+                            Total Working Hours:::::
+                        </div>
+                        <div class="modal-footer">
+                            <a href="#" data-bs-dismiss="modal" class="btn btn-outline-dark">Close</a>
+                            <a href="#" class="btn btn-primary">Save changes</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-12 col-lg-3 float-end">
+                <div class="card">
+                    <div class="card-body py-4 px-5">
+                        <div class="d-flex align-items-center">
+                            <div class="dropdown position-absolute top-5">
+                                <!-- <button class="btn btn-secondary" type="button" id="dropdownMenuButton1"
+                                    data-bs-toggle="dropdown" aria-expanded="false" style="width: 160px;">
+                                    <h5 class="font-bold">{{request.user}}</h5>
+                                </button> -->
+                                <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                                
+                                    <li>
+                                        {% if role == 3 or role1 == 3 %}
+                                        <a class="btn btn-default p-2 px-4 w-100" data-toggle="modal"
+                                        data-target="#exampleModalLong">Add Team</a>
+
+                                        <a class="btn btn-default p-2 px-4 w-100" href="{% url 'adminn:projects_lists' %}">Project List</a>
+
+                                        {% elif request.path == '/projects_lists' or request.path == '/Projects'%}
+
+                                        <a class="btn btn-default p-2 px-4 w-100" href="{% url 'adminn:home' %}">Dashboard</a>
+                                        
+                                        
+
+                                        {% elif role3 == 1 %}
+                                        <a class="btn btn-default p-2 px-4 w-100" data-toggle="modal"
+                                        data-target="#exampleModalLong">Daily Update</a>
+
+                                        <a class="btn btn-default p-2 px-4 w-100" data-toggle="modal"
+                                        data-target="#ModalLongProject3">Modify Project Status</a>
+
+                                        {% elif role3 == 2 %}
+                                        <a class="btn btn-default p-2 px-4 w-100" href="{% url 'adminn:home' %}">Dashboard</a>
+                                        <a class="btn btn-default p-2 px-4 w-100" data-toggle="modal"
+                                        data-target="#exampleModalLong">Daily Update</a>
+
+                                        {% else %}
+                                        <a class="btn btn-default p-2 px-4 w-100"
+                                        href='/emp/{{request.user}}'>Profile</a>
+                                        <a class="btn btn-default p-2 px-4 w-100" data-toggle="modal"
+                                        data-target="#exampleModalLong">Manage Team Members</a>
+                                        <a class="btn btn-default p-2 px-4 w-100"
+                                        href="{% url 'manager:team_projectdata' %}">Projects</a>
+                                        {% endif %}
+                                    </li>
+                                    <li><a class="btn btn-primary p-2 px-4 w-100"
+                                            href="{% url 'adminn:logout' %}">Logout</a></li>
+                                    <!-- <li><a class="btn btn-default p-2 px-4 w-100" href="#">{{request.user.email}}</a> -->
+                                        
+                                    </li>
+                                </ul>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+    </div> 
+    {% endblock %}
+    {% block js %}
+
+
+    <script>
+        function abcfgh(name) {
+            $("#search_addon").val(name)
+            $("#search_div").css("display", "none");
+        }
+
+
+        function teamsearch() {
+            link = window.location.href;
+            var out = ""
+            $("#search_div").html(out);
+            $("#search_div").css("display", "none");
+
+            let i = $("#search_addon").val();
+            if (i.length > 0) {
+                $.ajax({
+                    type: "GET",
+                    url: "searchteam_name",
+                    data: {
+                        "query": i,
+                        "link": link,
+                    },
+                    dataType: "json",
+                    success: function (data) {
+                        var value = $(data).val();
+                        $("#search_div > li").each(function() {
+                            if ($(search_div).text().search(value) > -1) {
+                                $(search_div).show();
+                            }
+                            else {
+                                $(search_div).hide();
+                            }
+                        });
+                    //     $("#search_div").css("display", "block");
+                    //     $("#search_div").append(data);
+                    //     var search_text = data[0];
+                    //     $("#search_div").text(data);
+                    //     console.log('dfsdfdsf', search_text)
+                    //     $('#search_div').append(data);
+                    //     if (search_text.length > 0) {
+                    //         for (var i = 0; i < Object.keys(data).length; i++){
+                    //             var a = 'li' + i;
+                    //             var test = String(data[i]);
+                    //             test = test.toString();
+
+                    //             out += '<li onclick="abcfgh(`' + test + '`)" id=li' + i + '> <span class="filter_search_label">' + data[i] + '</span></li>';
+                    //             $("#search_div").html(out);
+
+                    //         }
+                    // }   else {
+                    //         out += "No User Found"
+                    //         $("#search_div").html(out);
+                    //     }
+                    },
+                    error: function (error_data) {
+                        console.log(error_data);
+                    },
+
+                });
+            }
+        }
+    </script>    
+
+
+
+    <script>
+        function abcf(name) {
+            $("#search_addon").val(name)
+            $("#search_div").css("display", "none");
+        }
+
+
+        function searchhh() {
+            link = window.location.href;
+            var out = ""
+            $("#search_div").html(out);
+            $("#search_div").css("display", "none");
+
+            let i = $("#search_addon").val();
+            if (i.length > 0) {
+                $.ajax({
+                    type: "GET",
+                    url: "searchteam",
+                    data: {
+                        "query": i,
+                        "link": link,
+                    },
+                    dataType: "json",
+                    success: function (data) {
+                        $("#search_div").css("display", "block");
+                        $("#search_div").append(data);
+                        var search_text = data[0];
+                        $("#search_div").text(data);
+                        console.log('dfsdfdsf', search_text)
+                        $('#search_div').append(data);
+                        if (search_text.length > 0) {
+                            for (var i = 0; i < Object.keys(data).length; i++){
+                                var a = 'li' + i;
+                                var test = String(data[i]);
+                                test = test.toString();
+
+                                out += '<li onclick="abcf(`' + test + '`)" id=li' + i + '> <span class="filter_search_label">' + data[i] + '</span></li>';
+                                $("#search_div").html(out);
+
+                            }
+                    }   else {
+                            out += "No User Found"
+                            $("#search_div").html(out);
+                        }
+                    },
+                    error: function (error_data) {
+                        console.log(error_data);
+                    },
+
+                });
+            }
+        }
+    </script>
+
+    
+    <script>
+        function abcfgh(name) {
+            $("#search_addon").val(name)
+            $("#search_div").css("display", "none");
+        }
+
+
+        function teamsearch() {
+            link = window.location.href;
+            var out = ""
+            $("#search_div").html(out);
+            $("#search_div").css("display", "none");
+
+            let i = $("#search_addon").val();
+            if (i.length > 0) {
+                $.ajax({
+                    type: "GET",
+                    url: "searchteam_name",
+                    data: {
+                        "query": i,
+                        "link": link,
+                    },
+                    dataType: "json",
+                    success: function (data) {
+                        $("#search_div").css("display", "block");
+                        $("#search_div").append(data);
+                        var search_text = data[0];
+                        $("#search_div").text(data);
+                        console.log('dfsdfdsf', search_text)
+                        $('#search_div').append(data);
+                        if (search_text.length > 0) {
+                            for (var i = 0; i < Object.keys(data).length; i++){
+                                var a = 'li' + i;
+                                var test = String(data[i]);
+                                test = test.toString();
+
+                                out += '<li onclick="abcfgh(`' + test + '`)" id=li' + i + '> <span class="filter_search_label">' + data[i] + '</span></li>';
+                                $("#search_div").html(out);
+
+                            }
+                    }   else {
+                            out += "No User Found"
+                            $("#search_div").html(out);
+                        }
+                    },
+                    error: function (error_data) {
+                        console.log(error_data);
+                    },
+
+                });
+            }
+        }
+    </script>
+    
+
+    <script>
+        function abcfg(name) {
+            $("#search_addon").val(name)
+            $("#search_div").css("display", "none");
+        }
+
+
+        function projectsearch() {
+            link = window.location.href;
+            var out = ""
+            $("#search_div").html(out);
+            $("#search_div").css("display", "none");
+
+            let i = $("#search_addon").val();
+            if (i.length > 0) {
+                $.ajax({
+                    type: "GET",
+                    url: "searchprojects",
+                    data: {
+                        "query": i,
+                        "link": link,
+                    },
+                    dataType: "json",
+                    success: function (data) {
+                        $("#search_div").css("display", "block");
+                        $("#search_div").append(data);
+                        var search_text = data[0];
+                        $("#search_div").text(data);
+                        console.log('dfsdfdsf', search_text)
+                        $('#search_div').append(data);
+                        if (search_text.length > 0) {
+                            for (var i = 0; i < Object.keys(data).length; i++){
+                                var a = 'li' + i;
+                                var test = String(data[i]);
+                                test = test.toString();
+
+                                out += '<li onclick="abcfg(`' + test + '`)" id=li' + i + '> <span class="filter_search_label">' + data[i] + '</span></li>';
+                                $("#search_div").html(out);
+
+                            }
+                    }   else {
+                            out += "No Project Found"
+                            $("#search_div").html(out);
+                        }
+                    },
+                    error: function (error_data) {
+                        console.log(error_data);
+                    },
+
+                });
+            }
+        }
+    </script>
+    
+    
+    <script>
+        // function myFunction() {
+        // document.getElementById("myDropdown").classList.toggle("show");
+        // }
+        function abc(name) {
+
+
+            $("#myInput").val(name)
+            $("#custom_search_filter").css("display", "none");
+        }
+
+        function search() {
+            var output = ""
+            $("#custom_search_filter").html(output);
+            $("#custom_search_filter").css("display", "none");
+            let input = $("#myInput").val();
+            if (input.length > 1) {
+                console.log("filterData", input);
+                $.ajax({
+                    type: "GET",
+                    url: "newapi",
+                    data: {
+                        "query": input,
+                    },
+                    dataType: "json",
+                    success: function (data) {
+                        console.log(data)
+                        var kch_bhi = JSON.parse(data.a)
+                        $("#custom_search_filter").css("display", "block");
+                        if (kch_bhi.length > 0) {
+                            for (var i = 0; i < Object.keys(kch_bhi).length; i++) {
+                                var a = 'li' + i;
+                                var test = String(kch_bhi[i]);
+                                test = test.toString();
+
+                                output += '<li onclick="abc(`' + test + '`)" id=li' + i + '> <span class="filter_search_label">' + kch_bhi[i] + '</span></li>';
+
+                                $("#custom_search_filter").html(output);
+                            }
+                        } else {
+                            output += "No User Found"
+                            $("#custom_search_filter").html(output);
+                        }
+                    },
+                    error: function (error_data) {
+                        console.log(error_data);
+                    },
+
+                });
+            }
+        }
+
+    </script>
+
+    <script src="{% static 'assets/js/graph.js' %}"></script>
+    <script>
+        var date = new Date();
+        var current_date = date.getDate()+"-"+(date.getMonth()+1)+"-"+ date.getFullYear();
+        document.getElementById("p1").innerHTML = current_date;
+    </script>
+    {% endblock %}
+    <!-- </div> -->

@@ -1,0 +1,54 @@
+{% extends 'layouts/master.html' %}
+
+
+{% block content %}
+{%load static %}
+<link rel="stylesheet" href="{% static 'assets/vendors/iconly/bold.css' %}">
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.3/Chart.bundle.min.js"></script>
+
+{% include 'message.html' %}
+<h4><b>Upload file</b></h4><br>
+<form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    <div>
+    <input type="file" name="employeefile"><br>
+    <button type="submit" class="btn btn-primary">Upload</button>
+  </div>
+</form>
+
+
+{% endblock %}
+
+
+<!-- <div class="modal fade" id="exampleModalLong" role="dialog"aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <h6 class="text-center">File Upload</h6>
+      <div class="modal-header">
+      <form action="{% url 'manager:uploaddata' %}" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div>
+          <div class="modal-body">
+              <div class="col-lg-5">
+                  <label for="fname">Upload CSV:</label>&nbsp;&nbsp;
+              </div>
+              <div class="col-lg-5">
+                  <input type="file" id="employeefile" name="employeefile" placeholder="Add Csv"><br><br>
+              </div>
+              <div class="col-lg-12">
+                <div class="modal-footer">
+                  <button type="submit" class="btn btn-primary">Upload</button>
+                  <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </form>
+    </div>
+  </div>
+</div>
+</div> -->

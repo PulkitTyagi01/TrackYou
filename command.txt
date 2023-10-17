@@ -1,0 +1,2 @@
+docker build --tag track-you .
+docker run  --publish 8000:8000 track-you
